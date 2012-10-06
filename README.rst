@@ -1,12 +1,12 @@
 The Elsie's writing machine project
 ===================================
 
-Elsie_ is a 84 years old women who suffer a severe Parkinson's disease.
+Elsie_ is a 81 years old women who suffer a severe Parkinson's disease.
 
 Some time ago she could write, slowly, with a special big keys keyboard,
 but now its medicines are strongers, affecting her fine movements.
 
-Elsie is wonderful person, a great poet and philosopher. She still
+Elsie is a wonderful person, a great poet and philosopher. She still
 has a lot of words to share with the world. I really want to help her.
 
 The idea

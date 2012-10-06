@@ -49,9 +49,26 @@ $('#keyboard').keyboard({
      });
 
 
+
 $(document).ready( function() {
     var keys = $('#keyboard').getkeyboard().$keyboard.find('button');
-    console.log(keys);
+
+    var rotate = function(actual, prev){
+        if (prev) prev.trigger('mouseleave.keyboard');
+        actual.trigger('mouseenter.keyboard');
+
+        next_index = keys.index(actual) + 1;
+        if (next_index > keys.lenght) {
+            next_index = 0;
+        }
+
+        next = keys.eq(next_index);
+
+        setTimeout(function(){ rotate(next, actual); }, 1000);
+
+    }
+
+    rotate($('button:first'));
 });
 
 </script>
