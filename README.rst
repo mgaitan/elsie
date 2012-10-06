@@ -1,5 +1,5 @@
-The Elsie's writing machines project
-====================================
+The Elsie's writing machine project
+===================================
 
 Elsie_ is a 84 years old women who suffer a severe Parkinson's disease.
 
@@ -12,12 +12,12 @@ has a lot of words to share with the world. I really want to help her.
 The idea
 --------
 
-My idea is very simple
+The idea is very simple.
 
 She can't use the keyboard with precision, but still
 can press keys. So, using a virtual keyboard,
-that rotate the focus over each "virtual key",
-when she press *any* real key, the virtual key is pressed
+rotating the focus over each "virtual key",
+when she press *any* real key, the virtual key on focus is pressed
 
 Tasks
 -----

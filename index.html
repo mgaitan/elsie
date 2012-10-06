@@ -2,11 +2,10 @@
 <html>
     <head>
         <title>La maquina de escribir de Elsie</title>
+
         <!-- Bootstrap -->
         <link href="css/jquery-ui.css" rel="stylesheet">
-
         <link href="css/bootstrap.min.css" rel="stylesheet">
-
         <!-- keyboard widget css & script -->
         <link href="css/keyboard.css" rel="stylesheet">
     </head>
@@ -30,22 +29,30 @@
 
 <script>
 
-$('#keyboard')
- .keyboard({
+$('#keyboard').keyboard({
      layout: 'custom',
      alwaysOpen: true,
+     lockInput: true,
+     //restrictInput: true,
      customLayout: {
        'default' : [
-            '{bksp}',
-            'a b c d e f g h i j ',
+            ,
+            'a b c d e f g h i',
             'j k l m n \u00f1 o p q',
             'r s t u v w x y z',
-            '1 2 3 4 5 6 7 8 9',
-            ' , . + - =',
+            //'0 1 2 3 4 5 6 7 8 9',
+            ' , . ? ! {bksp}',
             '{si} {space} {no}'
         ]
-       }
+       },
+
      });
+
+
+$(document).ready( function() {
+    var keys = $('#keyboard').getkeyboard().$keyboard.find('button');
+    console.log(keys);
+});
 
 </script>
 </body>
