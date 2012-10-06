@@ -22,13 +22,14 @@ when she press *any* real key, the virtual key is pressed
 Tasks
 -----
 
-- create an extension to jquery.keyboard_ that rotate
+- create an extension to jquery.keyboard_ that rotates
   the focus (applying ``mouseenter`` / ``mouseleave`` to use hover effect)
-  over each button visible in the keyboard, in an infinite loop.
+  over each button visible in the keyboard ordered by appearance,
+  in an infinite loop.
 
     - The delay beetwen should be configurable
 
-    - pressing any key or clicking a mouse button anywhere, the current
+    - Pressing any key or clicking a mouse button anywhere, the current
       "on focus" virtual key is triggered (simulating it was pressed)
 
     - After trigger a key, the loop is restarted.
@@ -39,6 +40,10 @@ Demo
 See http://mgaitan.github.com/elsie for a demo of the work in progress
 
 
+Want to help me?
+-----------------
+
+Thanks! Just fork this and send me your pull request.
 
 
 .. _jquery.keyboard: https://github.com/Mottie/Keyboard
