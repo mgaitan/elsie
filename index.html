@@ -16,7 +16,7 @@
 
     <div class="row">
 
-            <textarea rows="6"  class="span12" id="keyboard"></textarea>
+            <textarea rows="6"  class="span12 hidden-desktop" id="keyboard"></textarea>
       </div>
 
 </div>
@@ -33,16 +33,17 @@ $('#keyboard').keyboard({
      layout: 'custom',
      alwaysOpen: true,
      lockInput: true,
-     //restrictInput: true,
+     restrictInput: true,
      customLayout: {
+
+       // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
        'default' : [
-            ,
-            'a b c d e f g h i',
-            'j k l m n \u00f1 o p q',
-            'r s t u v w x y z',
+            '{bksp} {space}',
+            'A E I O U ',
+            'B C D F G H J K L M N ',
+            '\u00d1 P Q R S T V X Y Z',
             //'0 1 2 3 4 5 6 7 8 9',
-            ' , . ? ! {bksp}',
-            '{si} {space} {no}'
+            ' , . ? ! ' //{bksp}'
         ]
        },
 
@@ -51,11 +52,18 @@ $('#keyboard').keyboard({
 
 
 $(document).ready( function() {
-    var keys = $('#keyboard').getkeyboard().$keyboard.find('button');
+    var base = $('#keyboard').getkeyboard();
+    var keys = base.$keyboard.find('button');
+
+    base.specials = {
+                'space': ' ',
+                'bksp': 'bksp',
+            }
 
     var rotate = function(actual, prev){
-        if (prev) prev.trigger('mouseleave.keyboard');
+        if (prev)  prev.trigger('mouseleave.keyboard');
         actual.trigger('mouseenter.keyboard');
+        base.actual = actual;
 
         next_index = keys.index(actual) + 1;
         if (next_index > keys.lenght) {
@@ -64,11 +72,25 @@ $(document).ready( function() {
 
         next = keys.eq(next_index);
 
-        setTimeout(function(){ rotate(next, actual); }, 1000);
+        base.interval = setTimeout(function(){
+                                    rotate(next, actual); },
+                                1000
+                            );
 
     }
 
     rotate($('button:first'));
+
+    $('body').on('keypress', function(e) {
+                txt = base.actual.attr('name');
+                k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
+                base.insertText(k);
+                keys.trigger('mouseleave.keyboard');
+                clearInterval(base.interval);
+                rotate($('button:first'));
+    });
+
+
 });
 
 </script>
