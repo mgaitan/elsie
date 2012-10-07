@@ -37,13 +37,23 @@ $('#keyboard').keyboard({
      customLayout: {
 
        // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
+       // E A O S R N I D L C T U M P B G V Y Q H F Z J Ñ X W K
        'default' : [
             '{bksp} {space}',
             'A E I O U ',
             'B C D F G H J K L M N ',
+            '{bksp} {space} ',
             '\u00d1 P Q R S T V X Y Z',
             //'0 1 2 3 4 5 6 7 8 9',
             ' , . ? ! ' //{bksp}'
+        ],
+        'prob': [
+            '{bksp} {space}',
+            'E A O I U',
+            'S R N D L C T M P G',
+            '{bksp} {space} ',
+            'V Y Q H F Z J \u00d1 X W K',
+             ' , . ? ! '
         ]
        },
 
@@ -52,13 +62,15 @@ $('#keyboard').keyboard({
 
 
 $(document).ready( function() {
+    var PAUSE = 1000;
     var base = $('#keyboard').getkeyboard();
-    var keys = base.$keyboard.find('button');
+    var keys = base.$keyboard.find('button:visible');
 
     base.specials = {
                 'space': ' ',
                 'bksp': 'bksp',
             }
+
 
     var rotate = function(actual, prev){
         if (prev)  prev.trigger('mouseleave.keyboard');
@@ -66,15 +78,15 @@ $(document).ready( function() {
         base.actual = actual;
 
         next_index = keys.index(actual) + 1;
-        if (next_index > keys.lenght) {
+        if (next_index > keys.length) {
             next_index = 0;
         }
-
+        console.log("next " + next_index + "len " + keys.length)
         next = keys.eq(next_index);
 
         base.interval = setTimeout(function(){
                                     rotate(next, actual); },
-                                1000
+                                PAUSE
                             );
 
     }
@@ -87,8 +99,20 @@ $(document).ready( function() {
                 base.insertText(k);
                 keys.trigger('mouseleave.keyboard');
                 clearInterval(base.interval);
-                rotate($('button:first'));
+
+                // where to jump
+                var row = parseInt( base.actual.attr('data-pos')[0]);
+                if (row == 1) {
+                    // jump to consonant
+                    rotate($('button[data-pos="2,0"]'));
+                } else if (row == 2 || row == 4) {
+                    // jump to vowal
+                    rotate($('button[data-pos="1,0"]'));
+                } else {
+                    rotate($('button:first'));
+                }
     });
+
 
 
 });
