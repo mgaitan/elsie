@@ -39,7 +39,6 @@ $('#keyboard').keyboard({
        'default' : [
             'A E I O U ',
             'B C D F G H J K L M N ',
-            'A E I O U ',
             '\u00d1 P Q R S T V X Y Z',
             '{space}',
 
@@ -118,19 +117,15 @@ $(function() {
                 keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
 
-                /* where to jump
+                // where to jump
                 var row = parseInt( base.actual.attr('data-pos')[0]);
-                if (row == 1) {
+                if (row == 0) {
                     // jump to consonant
-                    next = $('button[data-pos="2,0"]');
-                } else if (row == 2 || row == 4) {
-                    // jump to vowal
                     next = $('button[data-pos="1,0"]');
                 } else {
-                    next = $('button:first');
-                } */
-
-                rotate(keys.eq(0));
+                    next = keys.eq(0);
+                }
+                rotate(next);
 
                 // leave token after IGNORE_TIME
                 setInterval(function(){
@@ -147,7 +142,7 @@ $(function() {
     // bind click and keypress everywhere
     $('body').attr('style', 'height: 1024px');
 
-    $('body').on('keypress click', insert);
+    $('body').on('keyup click', insert);
     base.$keyboard.on('click', insert);
     keys.on('click', insert);
 
