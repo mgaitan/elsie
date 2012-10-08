@@ -64,11 +64,14 @@ $('#keyboard').keyboard({
 $(function() {
 
 
-
     var PAUSE = 2000;
+    var IGNORE_TIME = 2000;
+
     var base = $('#keyboard').getkeyboard();
     var keys = base.$keyboard.find('button:visible');
     var o = base.options;
+
+    base.ignore = false ;   // prevent multiple dispatch
 
     // unbind mouse on keyboard
     keys.off('mousedown.keyboard mouseenter.keyboard mouseleave.keyboard');
@@ -97,13 +100,17 @@ $(function() {
     }
 
     var insert = function(e) {
-                // backspace works as is
+
                 if (e.keyCode === 8) {
-                    k = 'bksp';
-                } else {
-                    txt = base.actual.attr('name');
-                    k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
+                    base.insertText('bksp');
+                    return;
                 }
+
+                if (base.ignore) return;
+                base.ignore = true;
+
+                txt = base.actual.attr('name');
+                k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
                 base.insertText(k);
                 keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
@@ -112,13 +119,21 @@ $(function() {
                 var row = parseInt( base.actual.attr('data-pos')[0]);
                 if (row == 1) {
                     // jump to consonant
-                    rotate($('button[data-pos="2,0"]'));
+                    next = $('button[data-pos="2,0"]');
                 } else if (row == 2 || row == 4) {
                     // jump to vowal
-                    rotate($('button[data-pos="1,0"]'));
+                    next = $('button[data-pos="1,0"]');
                 } else {
-                    rotate($('button:first'));
+                    next = $('button:first');
                 }
+
+                rotate(next);
+                // leave token after IGNORE_TIME
+                setInterval(function(){
+                             base.ignore = false;
+                            }, IGNORE_TIME);
+
+
             };
 
     rotate($('button:first'));
