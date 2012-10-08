@@ -100,10 +100,13 @@ $(function() {
     }
 
     var insert = function(e) {
-
+                console.log( e.keyCode);
                 if (e.keyCode === 8) {
                     base.insertText('bksp');
                     return;
+                } else if( e.keyCode === 122 ){
+                    // ignore F11
+                    return ;
                 }
 
                 if (base.ignore) return;
@@ -115,7 +118,7 @@ $(function() {
                 keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
 
-                // where to jump
+                /* where to jump
                 var row = parseInt( base.actual.attr('data-pos')[0]);
                 if (row == 1) {
                     // jump to consonant
@@ -125,9 +128,10 @@ $(function() {
                     next = $('button[data-pos="1,0"]');
                 } else {
                     next = $('button:first');
-                }
+                } */
 
-                rotate(next);
+                rotate(keys.eq(0));
+
                 // leave token after IGNORE_TIME
                 setInterval(function(){
                              base.ignore = false;
