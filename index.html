@@ -62,18 +62,14 @@ $('#keyboard').keyboard({
 
 $(function() {
 
-    // disable right click
-    $('body').on('contextmenu', function(e){
-        return false;
-    });
 
-    var PAUSE = 1000;
+
+    var PAUSE = 2000;
     var base = $('#keyboard').getkeyboard();
     var keys = base.$keyboard.find('button:visible');
     var o = base.options;
 
-
-    // unbind mouse
+    // unbind mouse on keyboard
     keys.off('mousedown.keyboard mouseenter.keyboard mouseleave.keyboard');
 
     base.specials = {
@@ -129,6 +125,14 @@ $(function() {
     $('body').on('keypress click', insert);
     base.$keyboard.on('click', insert);
     keys.on('click', insert);
+
+    // right click also trigger insert
+    $('body').on('contextmenu', function(e){
+        insert(e);
+        return false;
+    });
+
+
 });
 
 </script>
