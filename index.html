@@ -37,11 +37,12 @@ $('#keyboard').keyboard({
      customLayout: {
 
        'default' : [
-            '{bksp} {space}',
             'A E I O U ',
             'B C D F G H J K L M N ',
             'A E I O U ',
-            '\u00d1 P Q R S T V X Y Z'
+            '\u00d1 P Q R S T V X Y Z',
+            '{space}',
+
         ],
 
        // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
@@ -96,8 +97,13 @@ $(function() {
     }
 
     var insert = function(e) {
-                txt = base.actual.attr('name');
-                k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
+                // backspace works as is
+                if (e.keyCode === 8) {
+                    k = 'bksp';
+                } else {
+                    txt = base.actual.attr('name');
+                    k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
+                }
                 base.insertText(k);
                 keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
