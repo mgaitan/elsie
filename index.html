@@ -12,14 +12,14 @@
 <body>
 
 <div class="container">
-    <div class="row"><p></p></div>
+      <div class="row-fluid"><p></p></div>
 
-    <div class="row">
-
-            <textarea rows="6"  class="span12 hidden-desktop" id="keyboard"></textarea>
+       <div class="row-fluid invisible">
+            <textarea rows="6"  class="span12" id="keyboard"></textarea>
       </div>
-
 </div>
+
+
 
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -36,17 +36,17 @@ $('#keyboard').keyboard({
      restrictInput: true,
      customLayout: {
 
-       // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
-       // E A O S R N I D L C T U M P B G V Y Q H F Z J Ñ X W K
        'default' : [
-            '{bksp} {space}',
             'A E I O U ',
             'B C D F G H J K L M N ',
-            '{bksp} {space} ',
+            'A E I O U ',
             '\u00d1 P Q R S T V X Y Z',
-            //'0 1 2 3 4 5 6 7 8 9',
-            ' , . ? ! ' //{bksp}'
+            '{space}',
+
         ],
+
+       // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
+       // E A O S R N I D L C T U M P B G V Y Q H F Z J Ñ X W K
         'prob': [
             '{bksp} {space}',
             'E A O I U',
@@ -61,10 +61,20 @@ $('#keyboard').keyboard({
 
 
 
-$(document).ready( function() {
-    var PAUSE = 1000;
+$(function() {
+
+
+    var PAUSE = 2000;
+    var IGNORE_TIME = 2000;
+
     var base = $('#keyboard').getkeyboard();
     var keys = base.$keyboard.find('button:visible');
+    var o = base.options;
+
+    base.ignore = false ;   // prevent multiple dispatch
+
+    // unbind mouse on keyboard
+    keys.off('mousedown.keyboard mouseenter.keyboard mouseleave.keyboard');
 
     base.specials = {
                 'space': ' ',
@@ -73,17 +83,15 @@ $(document).ready( function() {
 
 
     var rotate = function(actual, prev){
-        if (prev)  prev.trigger('mouseleave.keyboard');
-        actual.trigger('mouseenter.keyboard');
+        if (prev)  prev.removeClass(o.css.buttonHover);
+        actual.addClass(o.css.buttonHover);
         base.actual = actual;
 
         next_index = keys.index(actual) + 1;
         if (next_index > keys.length) {
             next_index = 0;
         }
-        console.log("next " + next_index + "len " + keys.length)
         next = keys.eq(next_index);
-
         base.interval = setTimeout(function(){
                                     rotate(next, actual); },
                                 PAUSE
@@ -91,28 +99,63 @@ $(document).ready( function() {
 
     }
 
-    rotate($('button:first'));
+    var insert = function(e) {
+                console.log( e.keyCode);
+                if (e.keyCode === 8) {
+                    base.insertText('bksp');
+                    return;
+                } else if( e.keyCode === 122 ){
+                    // ignore F11
+                    return ;
+                }
 
-    $('body').on('keypress', function(e) {
+                if (base.ignore) return;
+                base.ignore = true;
+
                 txt = base.actual.attr('name');
                 k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
                 base.insertText(k);
-                keys.trigger('mouseleave.keyboard');
+                keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
 
-                // where to jump
+                /* where to jump
                 var row = parseInt( base.actual.attr('data-pos')[0]);
                 if (row == 1) {
                     // jump to consonant
-                    rotate($('button[data-pos="2,0"]'));
+                    next = $('button[data-pos="2,0"]');
                 } else if (row == 2 || row == 4) {
                     // jump to vowal
-                    rotate($('button[data-pos="1,0"]'));
+                    next = $('button[data-pos="1,0"]');
                 } else {
-                    rotate($('button:first'));
-                }
-    });
+                    next = $('button:first');
+                } */
 
+                rotate(keys.eq(0));
+
+                // leave token after IGNORE_TIME
+                setInterval(function(){
+                             base.ignore = false;
+                            }, IGNORE_TIME);
+
+
+            };
+
+    rotate($('button:first'));
+
+
+
+    // bind click and keypress everywhere
+    $('body').attr('style', 'height: 1024px');
+
+    $('body').on('keypress click', insert);
+    base.$keyboard.on('click', insert);
+    keys.on('click', insert);
+
+    // right click also trigger insert
+    $('body').on('contextmenu', function(e){
+        insert(e);
+        return false;
+    });
 
 
 });
