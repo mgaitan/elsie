@@ -12,14 +12,14 @@
 <body>
 
 <div class="container">
-    <div class="row"><p></p></div>
+      <div class="row-fluid"><p></p></div>
 
-    <div class="row">
-
-            <textarea rows="6"  class="span12 hidden-desktop" id="keyboard"></textarea>
+       <div class="row-fluid invisible">
+            <textarea rows="6"  class="span12" id="keyboard"></textarea>
       </div>
-
 </div>
+
+
 
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -36,17 +36,16 @@ $('#keyboard').keyboard({
      restrictInput: true,
      customLayout: {
 
-       // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
-       // E A O S R N I D L C T U M P B G V Y Q H F Z J Ñ X W K
        'default' : [
             '{bksp} {space}',
             'A E I O U ',
             'B C D F G H J K L M N ',
-            '{bksp} {space} ',
-            '\u00d1 P Q R S T V X Y Z',
-            //'0 1 2 3 4 5 6 7 8 9',
-            ' , . ? ! ' //{bksp}'
+            'A E I O U ',
+            '\u00d1 P Q R S T V X Y Z'
         ],
+
+       // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
+       // E A O S R N I D L C T U M P B G V Y Q H F Z J Ñ X W K
         'prob': [
             '{bksp} {space}',
             'E A O I U',
@@ -61,10 +60,21 @@ $('#keyboard').keyboard({
 
 
 
-$(document).ready( function() {
+$(function() {
+
+    // disable right click
+    $('body').on('contextmenu', function(e){
+        return false;
+    });
+
     var PAUSE = 1000;
     var base = $('#keyboard').getkeyboard();
     var keys = base.$keyboard.find('button:visible');
+    var o = base.options;
+
+
+    // unbind mouse
+    keys.off('mousedown.keyboard mouseenter.keyboard mouseleave.keyboard');
 
     base.specials = {
                 'space': ' ',
@@ -73,17 +83,15 @@ $(document).ready( function() {
 
 
     var rotate = function(actual, prev){
-        if (prev)  prev.trigger('mouseleave.keyboard');
-        actual.trigger('mouseenter.keyboard');
+        if (prev)  prev.removeClass(o.css.buttonHover);
+        actual.addClass(o.css.buttonHover);
         base.actual = actual;
 
         next_index = keys.index(actual) + 1;
         if (next_index > keys.length) {
             next_index = 0;
         }
-        console.log("next " + next_index + "len " + keys.length)
         next = keys.eq(next_index);
-
         base.interval = setTimeout(function(){
                                     rotate(next, actual); },
                                 PAUSE
@@ -91,13 +99,11 @@ $(document).ready( function() {
 
     }
 
-    rotate($('button:first'));
-
-    $('body').on('keypress', function(e) {
+    var insert = function(e) {
                 txt = base.actual.attr('name');
                 k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
                 base.insertText(k);
-                keys.trigger('mouseleave.keyboard');
+                keys.removeClass(o.css.buttonHover);
                 clearInterval(base.interval);
 
                 // where to jump
@@ -111,10 +117,18 @@ $(document).ready( function() {
                 } else {
                     rotate($('button:first'));
                 }
-    });
+            };
+
+    rotate($('button:first'));
 
 
 
+    // bind click and keypress everywhere
+    $('body').attr('style', 'height: 1024px');
+
+    $('body').on('keypress click', insert);
+    base.$keyboard.on('click', insert);
+    keys.on('click', insert);
 });
 
 </script>
