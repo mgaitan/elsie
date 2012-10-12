@@ -37,7 +37,7 @@ Tasks
 Demo
 ------
 
-See http://mgaitan.github.com/elsie for a demo of the work in progress
+See http://lab.nqnwebs.com/elsie/ for a demo of the work in progress
 
 
 Want to help me?
