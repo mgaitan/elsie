@@ -67,11 +67,13 @@ $('#keyboard').keyboard({
 $(function() {
 
 
-    var PAUSE = 2000;
+    var PAUSE = 3200;
     var IGNORE_TIME = 2000;
 
     var base = $('#keyboard').getkeyboard();
     var keys = base.$keyboard.find('br + button:visible');
+    var all_keys = base.$keyboard.find('button:visible');
+
     var o = base.options;
 
     base.ignore = false ;   // prevent multiple dispatch
@@ -86,16 +88,26 @@ $(function() {
 
 
     var rotate = function(actual, prev){
+        /* iterate over first key of each row.
+           when one is selected iterate over that row */
+
         if (prev)  prev.removeClass(o.css.buttonHover);
         actual.addClass(o.css.buttonHover);
         base.actual = actual;
+        console.log(actual.attr('data-pos'));
+        if (keys.index(actual) === -1 ) {
+            next_index = all_keys.index(actual) + 1;
 
-        next_index = keys.index(actual) + 1;
-        if (next_index === keys.length) {
-            next_index = 0;
-            next = $('button:first');
-        } else {
-            next = keys.eq(next_index);
+            next = all_keys.eq(next_index);
+
+        }else{
+            next_index = keys.index(actual) + 1;
+            if (next_index === keys.length) {
+                next_index = 0;
+                next = $('button:first');
+            } else {
+                next = keys.eq(next_index);
+            }
         }
         base.interval = setTimeout(function(){
                                     rotate(next, actual); },
@@ -105,41 +117,36 @@ $(function() {
     }
 
     var insert = function(e) {
-                console.log( e.keyCode);
-                if (e.keyCode === 8) {
-                    base.insertText('bksp');
-                    return;
-                } else if( e.keyCode === 122 ){
-                    // ignore F11
-                    return ;
-                }
+        if (e.keyCode === 8) {
+            base.insertText('bksp');
+            return;
+        } else if( e.keyCode === 122 ){
+            // ignore F11
+            return ;
+        }
 
-                if (base.ignore) return;
-                base.ignore = true;
+        if (base.ignore) return;
+        base.ignore = true;
 
-                txt = base.actual.attr('name');
-                k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
-                base.insertText(k);
-                keys.removeClass(o.css.buttonHover);
-                clearInterval(base.interval);
+        if (keys.index(base.actual) != -1){
+            /* selected row ? */
+            next = all_keys.eq(all_keys.index(base.actual) +  1);
+        }else{
+            txt = base.actual.attr('name');
+            k = (base.specials.hasOwnProperty(txt)) ? base.specials[txt] : base.actual.attr('data-value');
+            base.insertText(k);
+            next = keys.eq(0);
+        }
+        clearInterval(base.interval);
 
-                // where to jump
-                var row = parseInt( base.actual.attr('data-pos')[0]);
-                if (row == 0) {
-                    // jump to consonant
-                    next = $('button[data-pos="1,0"]');
-                } else {
-                    next = keys.eq(0);
-                }
-                rotate(next);
+        rotate(next, base.actual);
 
-                // leave token after IGNORE_TIME
-                setInterval(function(){
-                             base.ignore = false;
-                            }, IGNORE_TIME);
+        // leave token after IGNORE_TIME
+        setInterval(function(){
+                     base.ignore = false;
+                    }, IGNORE_TIME);
 
-
-            };
+    };
 
     rotate($('button:first'));
 
