@@ -39,11 +39,11 @@ $('#keyboard').keyboard({
      customLayout: {
 
        'default' : [
-            '> A B C D F G',
-            '> E H J K L M',
-            '> I N \u00d1 P Q R',
-            '> O S T V X Y Z',
-            '> U SI NO :) :(',
+            '→ A B C D F G',
+            '→ E H J K L M',
+            '→ I N \u00d1 P Q R',
+            '→ O S T V X Y Z',
+            '→ U SI NO :) :(',
             '{space}',
 
         ],
@@ -71,7 +71,7 @@ $(function() {
     var IGNORE_TIME = 2000;
 
     var base = $('#keyboard').getkeyboard();
-    var keys = base.$keyboard.find('button:visible');
+    var keys = base.$keyboard.find('br + button:visible');
     var o = base.options;
 
     base.ignore = false ;   // prevent multiple dispatch
@@ -91,10 +91,12 @@ $(function() {
         base.actual = actual;
 
         next_index = keys.index(actual) + 1;
-        if (next_index > keys.length) {
+        if (next_index === keys.length) {
             next_index = 0;
+            next = $('button:first');
+        } else {
+            next = keys.eq(next_index);
         }
-        next = keys.eq(next_index);
         base.interval = setTimeout(function(){
                                     rotate(next, actual); },
                                 PAUSE
