@@ -152,7 +152,7 @@ $(function() {
     // bind click and keypress everywhere
     $('body').attr('style', 'height: 900px');
 
-    $('body').on('keyup click', insert);
+    $('body').on('keydown click', insert);
     base.$keyboard.on('click', insert);
     keys.on('click', insert);
 
