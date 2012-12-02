@@ -67,11 +67,13 @@ $('#keyboard').keyboard({
 $(function() {
 
 
-    var PAUSE = 3200;
+    var PAUSE = 1000;
     var IGNORE_TIME = 2000;
 
     var base = $('#keyboard').getkeyboard();
-    var keys = base.$keyboard.find('br + button:visible');
+    var first = $('button:first');
+    var keys = first.add(base.$keyboard.find('br + button:visible'));  // first column
+
     var all_keys = base.$keyboard.find('button:visible');
 
     var o = base.options;
@@ -90,31 +92,28 @@ $(function() {
     var rotate = function(actual, prev){
         /* iterate over first key of each row.
            when one is selected iterate over that row */
-
+        console.log(keys);
         if (prev)  prev.removeClass(o.css.buttonHover);
         actual.addClass(o.css.buttonHover);
         base.actual = actual;
         console.log(actual.attr('data-pos'));
-        if (keys.index(actual) === -1 ) {
+        if (keys.index(actual) === -1) {
             next_index = all_keys.index(actual) + 1;
-
             next = all_keys.eq(next_index);
-
         }else{
             next_index = keys.index(actual) + 1;
             if (next_index === keys.length) {
-                next_index = 0;
-                next = $('button:first');
+                    next_index = 0;
+                    next = first;
             } else {
-                next = keys.eq(next_index);
+                    next = keys.eq(next_index);
             }
         }
-        base.interval = setTimeout(function(){
-                                    rotate(next, actual); },
+        console.log(next.attr('data-pos'));
+        base.interval = setTimeout(function(){ rotate(next, actual); },
                                 PAUSE
-                            );
-
-    }
+                        );
+        }
 
     var insert = function(e) {
         if (e.keyCode === 8) {
