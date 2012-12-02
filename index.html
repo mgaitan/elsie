@@ -39,13 +39,11 @@ $('#keyboard').keyboard({
      customLayout: {
 
        'default' : [
-            '→ A B C D F G',
-            '→ E H J K L M',
-            '→ I N \u00d1 P Q R',
-            '→ O S T V X Y Z',
-            '→ U SI NO :) :(',
-            '{space}',
-
+            '→ SI NO A B C D F',
+            '→ E G H J K L',
+            '→ I M N \u00d1 P Q',
+            '→ O R S T V X',
+            '→ U Y Z :) :(',
         ],
 
        // http://es.wikipedia.org/wiki/Frecuencia_de_aparici%C3%B3n_de_letras
@@ -152,7 +150,7 @@ $(function() {
 
 
     // bind click and keypress everywhere
-    $('body').attr('style', 'height: 1024px');
+    $('body').attr('style', 'height: 900px');
 
     $('body').on('keyup click', insert);
     base.$keyboard.on('click', insert);
